@@ -1,0 +1,148 @@
+---
+import { Image } from "astro:assets";
+import { navLinks } from "../lib/site";
+import type { SiteSettings } from "../lib/settings";
+
+interface Props {
+  transparent?: boolean;
+  settings: SiteSettings;
+}
+
+const { transparent = false, settings } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<header
+  id="site-nav"
+  data-transparent={transparent}
+  class={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+    transparent
+      ? "border-transparent bg-transparent text-paper"
+      : "border-hairline bg-paper text-ink"
+  }`}
+>
+  <div class="container-page flex h-20 items-center justify-between md:h-24">
+    <a href="/" class="relative flex h-9 items-center md:h-11" aria-label={settings.name}>
+      <Image
+        src={settings.logoIcon}
+        alt={settings.logoAlt}
+        height={44}
+        class={`logo-light h-full w-auto transition-opacity duration-300 ${transparent ? "opacity-0" : ""}`}
+      />
+      <Image
+        src={settings.logoIconOnDark}
+        alt=""
+        aria-hidden="true"
+        height={44}
+        class={`logo-dark absolute inset-0 h-full w-auto transition-opacity duration-300 ${transparent ? "" : "opacity-0"}`}
+      />
+    </a>
+
+    <nav class="hidden items-center gap-9 text-sm tracking-wide md:flex" aria-label="Primary">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            class={`nav-link relative py-1 transition-colors hover:text-accent ${
+              currentPath === link.href ? "text-accent" : ""
+            }`}
+            aria-current={currentPath === link.href ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a
+      href="/contact"
+      class="hidden rounded-full border border-current px-5 py-2 text-sm tracking-wide transition-colors hover:border-accent hover:text-accent md:inline-block"
+    >
+      Enquire
+    </a>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      class="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+    >
+      <span class="h-px w-6 bg-current transition-transform"></span>
+      <span class="h-px w-6 bg-current transition-opacity"></span>
+      <span class="h-px w-6 bg-current transition-transform"></span>
+    </button>
+  </div>
+</header>
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-40 hidden flex-col justify-center bg-ink px-8 text-paper md:hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Mobile navigation"
+>
+  <nav class="flex flex-col gap-6 text-3xl font-heading" aria-label="Mobile primary">
+    {
+      navLinks.map((link) => (
+        <a href={link.href} class="mobile-nav-link py-1 transition-colors hover:text-accent">
+          {link.label}
+        </a>
+      ))
+    }
+    <a href="/contact" class="mobile-nav-link py-1 text-accent">Enquire</a>
+  </nav>
+</div>
+
+<script>
+  const nav = document.getElementById("site-nav");
+  const menuToggle = document.getElementById("menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const isTransparent = nav?.dataset.transparent === "true";
+
+  const logoLight = document.querySelector<HTMLElement>(".logo-light");
+  const logoDark = document.querySelector<HTMLElement>(".logo-dark");
+
+  function setSolid(solid: boolean) {
+    if (!nav) return;
+    if (solid) {
+      nav.classList.remove("border-transparent", "bg-transparent", "text-paper");
+      nav.classList.add("border-hairline", "bg-paper/95", "backdrop-blur", "text-ink", "shadow-sm");
+      logoLight?.classList.remove("opacity-0");
+      logoDark?.classList.add("opacity-0");
+    } else if (isTransparent) {
+      nav.classList.add("border-transparent", "bg-transparent", "text-paper");
+      nav.classList.remove("border-hairline", "bg-paper/95", "backdrop-blur", "text-ink", "shadow-sm");
+      logoLight?.classList.add("opacity-0");
+      logoDark?.classList.remove("opacity-0");
+    }
+  }
+
+  function onScroll() {
+    setSolid(window.scrollY > 24);
+  }
+
+  if (isTransparent) {
+    document.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  } else {
+    setSolid(true);
+  }
+
+  let menuOpen = false;
+  function toggleMenu(open: boolean) {
+    menuOpen = open;
+    menuToggle?.setAttribute("aria-expanded", String(open));
+    menuToggle?.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    mobileMenu?.classList.toggle("hidden", !open);
+    mobileMenu?.classList.toggle("flex", open);
+    document.body.classList.toggle("overflow-hidden", open);
+    setSolid(open || window.scrollY > 24);
+  }
+
+  menuToggle?.addEventListener("click", () => toggleMenu(!menuOpen));
+  mobileMenu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => toggleMenu(false));
+  });
+</script>

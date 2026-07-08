@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://akamarchitects.com/sitemap-index.xml

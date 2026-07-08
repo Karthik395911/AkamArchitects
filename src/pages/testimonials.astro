@@ -1,0 +1,46 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Reveal from "../components/Reveal.tsx";
+import TestimonialCard from "../components/TestimonialCard.astro";
+
+const page = await getEntry("pages", "testimonials");
+const { eyebrow, heading, intro } = page?.data ?? {};
+
+const testimonials = (await getCollection("testimonials")).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<Layout
+  title="Testimonials"
+  description="What clients say about working with AKAM Architects & Construction."
+>
+  {
+    heading && (
+      <section class="container-page pb-16 pt-36 md:pt-44">
+        <Reveal client:visible>
+          {eyebrow && <p class="text-xs uppercase tracking-[0.3em] text-accent">{eyebrow}</p>}
+          <h1 class="mt-3 max-w-2xl text-balance font-heading text-4xl tracking-tight md:text-6xl">
+            {heading}
+          </h1>
+          {intro && <p class="mt-5 max-w-lg leading-relaxed text-stone">{intro}</p>}
+        </Reveal>
+      </section>
+    )
+  }
+
+  {
+    testimonials.length > 0 && (
+      <section class={`container-page pb-28 ${heading ? "" : "pt-36 md:pt-44"}`}>
+        <div class="grid gap-8 md:grid-cols-2">
+          {testimonials.map((t, index) => (
+            <Reveal client:visible delay={Math.min(index, 4) * 0.06}>
+              <TestimonialCard quote={t.data.quote} name={t.data.name} role={t.data.role} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Layout>

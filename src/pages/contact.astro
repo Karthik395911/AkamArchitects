@@ -1,0 +1,152 @@
+---
+import { getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import Reveal from "../components/Reveal.tsx";
+import { getSiteSettings } from "../lib/settings";
+
+const page = await getEntry("pages", "contact");
+const { eyebrow, heading, intro } = page?.data ?? {};
+
+const settings = await getSiteSettings();
+
+const formId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const formAction = formId ? `https://formspree.io/f/${formId}` : undefined;
+
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
+  settings.mapQuery,
+)}&output=embed`;
+
+const whatsappHref = `https://wa.me/${settings.whatsapp}?text=${encodeURIComponent(
+  "Hello AKAM Architects, I'd like to enquire about a project.",
+)}`;
+---
+
+<Layout
+  title="Contact"
+  description="Get in touch with AKAM Architects & Construction - phone, email, WhatsApp, or send an enquiry directly."
+>
+  {
+    heading && (
+      <section class="container-page pb-16 pt-36 md:pt-44">
+        <Reveal client:visible>
+          {eyebrow && <p class="text-xs uppercase tracking-[0.3em] text-accent">{eyebrow}</p>}
+          <h1 class="mt-3 max-w-2xl text-balance font-heading text-4xl tracking-tight md:text-6xl">
+            {heading}
+          </h1>
+          {intro && <p class="mt-5 max-w-lg leading-relaxed text-stone">{intro}</p>}
+        </Reveal>
+      </section>
+    )
+  }
+
+  <section class="container-page grid gap-16 pb-28 lg:grid-cols-5">
+    <Reveal client:visible className="lg:col-span-3">
+      {
+        formAction ? (
+          <form
+            action={formAction}
+            method="POST"
+            class="grid gap-6 sm:grid-cols-2"
+          >
+            <div class="sm:col-span-1">
+              <label for="name" class="text-xs uppercase tracking-[0.15em] text-stone">Name</label>
+              <input id="name" name="name" type="text" required class="mt-2 w-full border-b border-hairline bg-transparent py-3 outline-none focus-visible:border-accent" />
+            </div>
+            <div class="sm:col-span-1">
+              <label for="email" class="text-xs uppercase tracking-[0.15em] text-stone">Email</label>
+              <input id="email" name="email" type="email" required class="mt-2 w-full border-b border-hairline bg-transparent py-3 outline-none focus-visible:border-accent" />
+            </div>
+            <div class="sm:col-span-1">
+              <label for="phone" class="text-xs uppercase tracking-[0.15em] text-stone">Phone</label>
+              <input id="phone" name="phone" type="tel" class="mt-2 w-full border-b border-hairline bg-transparent py-3 outline-none focus-visible:border-accent" />
+            </div>
+            <div class="sm:col-span-1">
+              <label for="project_type" class="text-xs uppercase tracking-[0.15em] text-stone">Project Type</label>
+              <select id="project_type" name="project_type" class="mt-2 w-full border-b border-hairline bg-transparent py-3 outline-none focus-visible:border-accent">
+                <option>Residential</option>
+                <option>Commercial</option>
+                <option>Interior</option>
+                <option>Hospitality</option>
+                <option>Institutional</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="message" class="text-xs uppercase tracking-[0.15em] text-stone">Message</label>
+              <textarea id="message" name="message" rows={5} required class="mt-2 w-full border-b border-hairline bg-transparent py-3 outline-none focus-visible:border-accent" />
+            </div>
+            {/* Honeypot spam trap - hidden from real visitors */}
+            <input type="text" name="_gotcha" class="hidden" tabindex={-1} autocomplete="off" />
+
+            <div class="sm:col-span-2">
+              <button
+                type="submit"
+                class="rounded-full bg-ink px-8 py-4 text-sm font-medium tracking-wide text-paper transition-transform hover:scale-[1.03]"
+              >
+                Send Enquiry
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div class="border border-hairline bg-mist p-8 text-sm leading-relaxed text-stone">
+            <p class="font-heading text-lg text-ink">Enquiry form not yet connected</p>
+            <p class="mt-2">
+              Set the <code class="text-ink">PUBLIC_FORMSPREE_ID</code> environment variable
+              (see the README) to activate the enquiry form. Until then, reach us directly by
+              phone, email, or WhatsApp.
+            </p>
+          </div>
+        )
+      }
+    </Reveal>
+
+    <Reveal client:visible delay={0.1} className="lg:col-span-2">
+      <div class="space-y-8 text-sm">
+        <div>
+          <p class="text-xs uppercase tracking-[0.15em] text-stone">Phone</p>
+          <a href={settings.phoneHref} class="mt-2 block font-heading text-xl hover:text-accent">
+            {settings.phone}
+          </a>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-[0.15em] text-stone">Email</p>
+          <a href={`mailto:${settings.email}`} class="mt-2 block font-heading text-xl hover:text-accent">
+            {settings.email}
+          </a>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-[0.15em] text-stone">Studio</p>
+          <p class="mt-2 leading-relaxed text-stone">
+            {settings.addressLine1}{settings.addressLine2 && `, ${settings.addressLine2}`}<br />
+            {settings.addressCity}, {settings.addressState} {settings.addressPostalCode}<br />
+            {settings.addressCountry}
+          </p>
+        </div>
+        <div>
+          <p class="text-xs uppercase tracking-[0.15em] text-stone">Business Hours</p>
+          <p class="mt-2 leading-relaxed text-stone">{settings.hours}</p>
+        </div>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-hairline px-6 py-3 text-sm tracking-wide transition-colors hover:border-accent hover:text-accent"
+        >
+          Chat on WhatsApp
+        </a>
+      </div>
+    </Reveal>
+  </section>
+
+  <section class="border-t border-hairline">
+    <iframe
+      title="AKAM Architects studio location"
+      src={mapSrc}
+      width="100%"
+      height="420"
+      style="border:0"
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+    ></iframe>
+  </section>
+</Layout>

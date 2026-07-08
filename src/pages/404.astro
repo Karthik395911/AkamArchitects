@@ -1,0 +1,31 @@
+---
+import { getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+
+const page = await getEntry("pages", "not-found");
+const { eyebrow, heading = "Page not found", intro } = page?.data ?? {};
+---
+
+<Layout title="Page Not Found" description="The page you're looking for doesn't exist." noindex>
+  <section class="container-page flex min-h-[70svh] flex-col items-start justify-center py-32">
+    {eyebrow && <p class="text-xs uppercase tracking-[0.3em] text-accent">{eyebrow}</p>}
+    <h1 class="mt-4 max-w-xl text-balance font-heading text-4xl tracking-tight md:text-6xl">
+      {heading}
+    </h1>
+    {intro && <p class="mt-5 max-w-md leading-relaxed text-stone">{intro}</p>}
+    <div class="mt-9 flex flex-wrap gap-4">
+      <a
+        href="/"
+        class="rounded-full bg-ink px-7 py-3 text-sm font-medium tracking-wide text-paper transition-transform hover:scale-[1.03]"
+      >
+        Back to Home
+      </a>
+      <a
+        href="/projects"
+        class="rounded-full border border-hairline px-7 py-3 text-sm font-medium tracking-wide text-ink transition-colors hover:border-accent hover:text-accent"
+      >
+        View Projects
+      </a>
+    </div>
+  </section>
+</Layout>

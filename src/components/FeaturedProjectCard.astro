@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  priority?: boolean;
+}
+
+const { project, priority = false } = Astro.props;
+const { title, category, location, heroImage, heroImageAlt } = project.data;
+---
+
+<a
+  href={`/projects/${project.id}`}
+  class="group block"
+  aria-label={`View ${title} - ${category}, ${location}`}
+>
+  <div class="aspect-[16/10] overflow-hidden bg-mist">
+    <Image
+      src={heroImage}
+      alt={heroImageAlt}
+      width={800}
+      height={500}
+      loading={priority ? "eager" : "lazy"}
+      class="h-full w-full object-cover grayscale transition-transform duration-700 ease-out group-hover:scale-105"
+    />
+  </div>
+  <div class="mt-4">
+    <span class="text-xs uppercase tracking-[0.15em] text-accent">{category}</span>
+    <h3 class="mt-1 font-heading text-lg tracking-tight text-ink transition-colors group-hover:text-accent md:text-xl">
+      {title}
+    </h3>
+    <p class="mt-0.5 text-sm text-stone">{location}</p>
+  </div>
+</a>

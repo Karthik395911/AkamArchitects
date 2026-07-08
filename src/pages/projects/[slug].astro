@@ -1,0 +1,178 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import { Image, getImage } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import Reveal from "../../components/Reveal.tsx";
+import Lightbox from "../../components/Lightbox.tsx";
+import { siteUrl } from "../../lib/site";
+import { breadcrumbSchema } from "../../lib/schema";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props as Props;
+const {
+  title,
+  category,
+  location,
+  year,
+  area,
+  services,
+  heroImage,
+  heroImageAlt,
+  gallery,
+  excerpt,
+  description,
+} = project.data;
+const descriptionParagraphs = description
+  .trim()
+  .split(/\n\s*\n/)
+  .map((p) => p.trim());
+
+const allProjects = await getCollection("projects");
+const featured = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.featuredOrder - b.data.featuredOrder);
+
+const currentIndex = featured.findIndex((p) => p.id === project.id);
+const nextProject = featured[(currentIndex + 1) % featured.length];
+const relatedProjects = featured
+  .filter((p) => p.id !== project.id && p.data.category === category)
+  .slice(0, 3);
+const fallbackRelated = featured.filter((p) => p.id !== project.id).slice(0, 3);
+const related = relatedProjects.length > 0 ? relatedProjects : fallbackRelated;
+
+const galleryImages = await Promise.all(
+  gallery.map(async (item) => {
+    const optimized = await getImage({ src: item.image, width: 1400 });
+    return { src: optimized.src, alt: item.alt, width: optimized.attributes.width as number, height: optimized.attributes.height as number };
+  }),
+);
+
+const breadcrumb = breadcrumbSchema([
+  { name: "Home", url: siteUrl },
+  { name: "Projects", url: `${siteUrl}/projects` },
+  { name: title, url: `${siteUrl}/projects/${project.id}` },
+]);
+---
+
+<Layout
+  title={title}
+  description={excerpt}
+  transparentNav
+  jsonLd={[breadcrumb]}
+>
+  <!-- Hero -->
+  <section class="relative flex h-[85svh] min-h-[520px] items-end overflow-hidden bg-ink">
+    <Image
+      src={heroImage}
+      alt={heroImageAlt}
+      class="absolute inset-0 h-full w-full object-cover"
+      widths={[800, 1200, 1920, 2400]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-ink/30"></div>
+    <div class="container-page relative z-10 pb-16 pt-40 text-paper">
+      <p class="hero-fade text-xs uppercase tracking-[0.3em] text-accent">{category}</p>
+      <h1 class="hero-fade mt-4 max-w-3xl text-balance font-heading text-4xl font-semibold tracking-tight md:text-6xl" style="animation-delay:0.1s">
+        {title}
+      </h1>
+    </div>
+  </section>
+
+  <!-- Project Info -->
+  <section class="container-page grid gap-10 border-b border-hairline py-14 sm:grid-cols-2 lg:grid-cols-4">
+    <div>
+      <p class="text-xs uppercase tracking-[0.2em] text-stone">Location</p>
+      <p class="mt-2 font-heading text-lg">{location}</p>
+    </div>
+    <div>
+      <p class="text-xs uppercase tracking-[0.2em] text-stone">Completion</p>
+      <p class="mt-2 font-heading text-lg">{year}</p>
+    </div>
+    {
+      area && (
+        <div>
+          <p class="text-xs uppercase tracking-[0.2em] text-stone">Area</p>
+          <p class="mt-2 font-heading text-lg">{area}</p>
+        </div>
+      )
+    }
+    <div>
+      <p class="text-xs uppercase tracking-[0.2em] text-stone">Services</p>
+      <p class="mt-2 font-heading text-lg">{services.join(", ")}</p>
+    </div>
+  </section>
+
+  <!-- Description -->
+  <section class="container-page grid gap-10 py-16 md:grid-cols-3">
+    <Reveal client:visible className="md:col-span-1">
+      <h2 class="font-heading text-2xl tracking-tight">Overview</h2>
+    </Reveal>
+    <Reveal client:visible className="md:col-span-2 max-w-2xl space-y-5 leading-relaxed text-stone" delay={0.1}>
+      {descriptionParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+    </Reveal>
+  </section>
+
+  <!-- Gallery -->
+  {
+    galleryImages.length > 0 && (
+      <section class="container-page py-16">
+        <Reveal client:visible>
+          <h2 class="font-heading text-2xl tracking-tight">Gallery</h2>
+        </Reveal>
+        <div class="mt-8">
+          <Lightbox client:visible images={galleryImages} />
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Next Project -->
+  <section class="border-t border-hairline bg-ink">
+    <a
+      href={`/projects/${nextProject.id}`}
+      class="group container-page flex items-center justify-between gap-6 py-16 text-paper"
+    >
+      <div>
+        <p class="text-xs uppercase tracking-[0.3em] text-accent">Next Project</p>
+        <h2 class="mt-3 font-heading text-3xl tracking-tight transition-colors group-hover:text-accent md:text-5xl">
+          {nextProject.data.title}
+        </h2>
+      </div>
+      <span class="hidden shrink-0 text-4xl transition-transform group-hover:translate-x-2 md:inline" aria-hidden="true">
+        &#8594;
+      </span>
+    </a>
+  </section>
+
+  <!-- Related Projects -->
+  {
+    related.length > 0 && (
+      <section class="container-page py-24">
+        <Reveal client:visible>
+          <h2 class="font-heading text-2xl tracking-tight">Related Projects</h2>
+        </Reveal>
+        <div class="mt-10 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+          {related.map((p, index) => (
+            <Reveal client:visible delay={index * 0.08}>
+              <ProjectCard project={p} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</Layout>
