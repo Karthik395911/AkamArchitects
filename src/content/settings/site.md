@@ -21,4 +21,5 @@ addressCountry: "India"
 mapQuery: "Ganga Building, Vazhakkad Road, Areekode, Malappuram, Kerala 673639"
 hours: "Monday – Saturday, by appointment. Closed Sunday."
 socialFacebook: "https://facebook.com/103141377858879"
+socialInstagram: "https://www.instagram.com/akamarchitects/"
 ---

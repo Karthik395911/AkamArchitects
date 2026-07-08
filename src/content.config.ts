@@ -140,6 +140,7 @@ const expertise = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    detailIntro: z.string(),
     order: z.number().int().default(999),
   }),
 });

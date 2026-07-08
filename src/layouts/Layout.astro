@@ -17,6 +17,7 @@ interface Props {
   noindex?: boolean;
   jsonLd?: Record<string, unknown>[];
   transparentNav?: boolean;
+  largeHomeLogo?: boolean;
 }
 
 const {
@@ -26,6 +27,7 @@ const {
   noindex,
   jsonLd = [],
   transparentNav = false,
+  largeHomeLogo = false,
 } = Astro.props;
 
 const settings = await getSiteSettings();
@@ -93,7 +95,7 @@ const clarityId = import.meta.env.PUBLIC_CLARITY_ID;
     </a>
 
     <ScrollProgress />
-    <Navbar transparent={transparentNav} settings={settings} />
+    <Navbar transparent={transparentNav} largeHomeLogo={largeHomeLogo} settings={settings} />
 
     <main id="main-content">
       <slot />

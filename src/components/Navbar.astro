@@ -6,16 +6,18 @@ import { withBase } from "../lib/urls";
 
 interface Props {
   transparent?: boolean;
+  largeHomeLogo?: boolean;
   settings: SiteSettings;
 }
 
-const { transparent = false, settings } = Astro.props;
+const { transparent = false, largeHomeLogo = false, settings } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 
 <header
   id="site-nav"
   data-transparent={transparent}
+  data-large-logo={largeHomeLogo}
   class={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
     transparent
       ? "border-transparent bg-transparent text-paper"
@@ -23,7 +25,13 @@ const currentPath = Astro.url.pathname;
   }`}
 >
   <div class="container-page flex h-20 items-center justify-between md:h-24">
-    <a href={withBase("/")} class="relative flex h-9 items-center md:h-11" aria-label={settings.name}>
+    <a
+      href={withBase("/")}
+      class={`site-logo-link relative flex items-center transition-[height] duration-300 ${
+        largeHomeLogo ? "h-14 md:h-20" : "h-9 md:h-11"
+      }`}
+      aria-label={settings.name}
+    >
       <Image
         src={settings.logoIcon}
         alt={settings.logoAlt}
@@ -101,12 +109,20 @@ const currentPath = Astro.url.pathname;
   const menuToggle = document.getElementById("menu-toggle");
   const mobileMenu = document.getElementById("mobile-menu");
   const isTransparent = nav?.dataset.transparent === "true";
+  const usesLargeLogo = nav?.dataset.largeLogo === "true";
 
+  const logoLink = document.querySelector<HTMLElement>(".site-logo-link");
   const logoLight = document.querySelector<HTMLElement>(".logo-light");
   const logoDark = document.querySelector<HTMLElement>(".logo-dark");
 
   function setSolid(solid: boolean) {
     if (!nav) return;
+    if (usesLargeLogo) {
+      logoLink?.classList.toggle("h-14", !solid);
+      logoLink?.classList.toggle("md:h-20", !solid);
+      logoLink?.classList.toggle("h-9", solid);
+      logoLink?.classList.toggle("md:h-11", solid);
+    }
     if (solid) {
       nav.classList.remove("border-transparent", "bg-transparent", "text-paper");
       nav.classList.add("border-hairline", "bg-paper/95", "backdrop-blur", "text-ink", "shadow-sm");
