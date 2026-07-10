@@ -1,5 +1,7 @@
 # AKAM Architects & Construction - Website
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/1e260b37-d35a-4069-83ee-4221c797b54a/deploy-status)](https://app.netlify.com/projects/akamarchitects/deploys)
+
 A premium, static-first portfolio website for AKAM Architects & Construction, built with
 Astro, TypeScript, Tailwind CSS, React islands, and Framer Motion. See [CLAUDE.md](CLAUDE.md)
 for the full design/engineering brief this project follows.
