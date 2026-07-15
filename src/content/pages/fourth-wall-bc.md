@@ -11,4 +11,11 @@ gallery:
     alt: "Glass-walled office building facade (placeholder photo)"
   - image: "../../assets/pages/fourth-wall-bc/gallery-3.jpg"
     alt: "Two people shaking hands on an agreement (placeholder photo)"
+partners:
+  - name: "Ar. Karthik Dileepan"
+    role: "Partner, Fourth Wall BC"
+    bio: "Leads Fourth Wall BC's architectural and design consultancy, working alongside AKAM on feasibility, planning, and design coordination for shared projects."
+  - name: "Vyshak PV"
+    role: "Partner, Fourth Wall BC"
+    bio: "Oversees the construction and site-execution side of Fourth Wall BC's partnership with AKAM, from cost planning through to delivery on site."
 ---

@@ -214,6 +214,18 @@ const pages = defineCollection({
           }),
         )
         .default([]),
+      // Partner contacts - only used by pages that opt in (e.g. fourth-wall-bc).
+      partners: z
+        .array(
+          z.object({
+            name: z.string(),
+            role: z.string().optional(),
+            bio: z.string().optional(),
+            photo: image().optional(),
+            photoAlt: z.string().optional(),
+          }),
+        )
+        .default([]),
     }),
 });
 

@@ -33,14 +33,14 @@ collections:
         name: "services"
         widget: "list"
         field: { label: "Service", name: "service", widget: "string" }
-      - { label: "Hero Image", name: "heroImage", widget: "image" }
+      - { label: "Hero Image", name: "heroImage", widget: "image", hint: "At least 2400px wide, landscape (~16:10). This is the big full-width banner at the top of the project page." }
       - { label: "Hero Image Alt Text", name: "heroImageAlt", widget: "string", hint: "Describe the image for screen readers and SEO" }
       - label: "Gallery"
         name: "gallery"
         widget: "list"
         required: false
         fields:
-          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Image", name: "image", widget: "image", hint: "At least 1600px wide, landscape (~16:10) works best." }
           - { label: "Alt Text", name: "alt", widget: "string" }
       - { label: "Excerpt", name: "excerpt", widget: "text", hint: "One or two sentences shown on cards" }
       - { label: "Full Description", name: "description", widget: "text", hint: "Use a blank line between paragraphs" }
@@ -58,14 +58,14 @@ collections:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Short Description", name: "description", widget: "text" }
       - { label: "Detail Page Intro", name: "detailIntro", widget: "text" }
-      - { label: "Image", name: "image", widget: "image" }
+      - { label: "Image", name: "image", widget: "image", hint: "At least 1600px wide, landscape (~16:10)." }
       - { label: "Image Alt Text", name: "imageAlt", widget: "string" }
       - label: "Gallery"
         name: "gallery"
         widget: "list"
         required: false
         fields:
-          - { label: "Image", name: "image", widget: "image" }
+          - { label: "Image", name: "image", widget: "image", hint: "At least 1600px wide, landscape (~16:10)." }
           - { label: "Alt Text", name: "alt", widget: "string" }
       - { label: "Order", name: "order", widget: "number", value_type: "int", default: 999, hint: "Lower numbers appear first" }
 
@@ -91,7 +91,7 @@ collections:
         fields:
           - { label: "Eyebrow", name: "eyebrow", widget: "string", required: false }
           - { label: "Heading", name: "heading", widget: "string" }
-          - { label: "Hero Image", name: "heroImage", widget: "image" }
+          - { label: "Hero Image", name: "heroImage", widget: "image", hint: "At least 2400px wide, landscape (~16:10). Full-width banner." }
           - { label: "Hero Image Alt Text", name: "heroImageAlt", widget: "string" }
           - { label: "Story Eyebrow", name: "storyEyebrow", widget: "string", required: false }
           - { label: "Story Heading", name: "storyHeading", widget: "string", required: false }
@@ -122,7 +122,7 @@ collections:
               - { label: "Name", name: "name", widget: "string" }
               - { label: "Role", name: "role", widget: "string", required: false }
               - { label: "Bio", name: "bio", widget: "text", required: false }
-              - { label: "Photo", name: "photo", widget: "image", required: false }
+              - { label: "Photo", name: "photo", widget: "image", required: false, hint: "At least 1200px wide, portrait (~4:5)." }
               - { label: "Photo Alt Text", name: "photoAlt", widget: "string", required: false }
 
   - name: "home"
@@ -215,6 +215,17 @@ collections:
         fields:
           - { label: "Image", name: "image", widget: "image" }
           - { label: "Alt Text", name: "alt", widget: "string" }
+      - label: "Partners"
+        name: "partners"
+        widget: "list"
+        required: false
+        hint: "Only shown on pages that use it, e.g. Fourth Wall BC."
+        fields:
+          - { label: "Name", name: "name", widget: "string" }
+          - { label: "Role", name: "role", widget: "string", required: false }
+          - { label: "Bio", name: "bio", widget: "text", required: false }
+          - { label: "Photo", name: "photo", widget: "image", required: false, hint: "At least 1200px wide, portrait (~4:5)." }
+          - { label: "Photo Alt Text", name: "photoAlt", widget: "string", required: false }
 
   - name: "legal"
     label: "Legal"

@@ -7,59 +7,82 @@ import { withBase } from "../lib/urls";
 import fourthWallLogo from "../assets/partners/fourth-wall-bc-logo.png";
 
 const page = await getEntry("pages", "fourth-wall-bc");
-const { eyebrow, heading, intro, heroImage, heroImageAlt, gallery = [] } = page?.data ?? {};
+const {
+  eyebrow,
+  heading,
+  intro,
+  heroImage,
+  heroImageAlt,
+  gallery = [],
+  partners = [],
+} = page?.data ?? {};
 ---
 
 <Layout
   title="Fourth Wall BC"
   description="Fourth Wall BC is a building consultancy and partner of AKAM Architects & Construction."
+  transparentNav
 >
-  <section class="container-page max-w-3xl py-36 md:py-44">
-    <Reveal client:visible>
-      {eyebrow && <p class="text-xs uppercase tracking-[0.3em] text-accent">{eyebrow}</p>}
+  <!-- Hero -->
+  <section class="relative flex h-[60svh] min-h-[420px] items-end overflow-hidden bg-ink">
+    {
+      heroImage && (
+        <Image
+          src={heroImage}
+          alt={heroImageAlt ?? ""}
+          class="absolute inset-0 h-full w-full object-cover grayscale"
+          widths={[800, 1200, 1800]}
+          sizes="100vw"
+          format="avif"
+          quality={53}
+          loading="eager"
+          fetchpriority="high"
+        />
+      )
+    }
+    <div class="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-ink/40"></div>
+    <div class="container-page relative z-10 pb-16 pt-40 text-paper">
+      {eyebrow && <p class="hero-fade text-xs uppercase tracking-[0.3em] text-accent">{eyebrow}</p>}
       {heading && (
-        <h1 class="mt-3 font-heading text-4xl tracking-tight md:text-5xl">{heading}</h1>
+        <h1
+          class="hero-fade mt-4 max-w-2xl text-balance font-heading text-4xl font-semibold tracking-tight md:text-6xl"
+          style="animation-delay:0.1s"
+        >
+          {heading}
+        </h1>
       )}
+    </div>
+  </section>
 
-      <div class="mt-10 flex h-28 items-center border-y border-hairline py-4">
+  <!-- Intro + logo -->
+  <section class="container-page grid gap-10 border-b border-hairline py-16 md:grid-cols-[0.8fr_1.4fr] md:py-20">
+    <Reveal client:visible>
+      <div class="flex h-24 items-center">
         <Image
           src={fourthWallLogo}
           alt="Fourth Wall BC logo"
           height={150}
           format="avif"
-          class="max-h-20 w-auto max-w-[14rem] object-contain grayscale contrast-125"
+          class="max-h-16 w-auto max-w-[13rem] object-contain grayscale contrast-125"
         />
       </div>
-
-      {intro && (
-        <p class="mt-10 max-w-2xl leading-relaxed text-stone">{intro}</p>
-      )}
+      <p class="mt-6 text-xs uppercase tracking-[0.2em] text-stone">Partner Studio</p>
     </Reveal>
+    {intro && (
+      <Reveal client:visible delay={0.08} className="max-w-2xl leading-relaxed text-stone">
+        <p>{intro}</p>
+      </Reveal>
+    )}
   </section>
 
-  {
-    heroImage && (
-      <Reveal client:visible>
-        <div class="container-page aspect-[16/9] overflow-hidden bg-mist">
-          <Image
-            src={heroImage}
-            alt={heroImageAlt ?? ""}
-            widths={[800, 1200, 1800]}
-            sizes="100vw"
-            format="avif"
-            quality={53}
-            loading="eager"
-            class="h-full w-full object-cover grayscale"
-          />
-        </div>
-      </Reveal>
-    )
-  }
-
+  <!-- Gallery -->
   {
     gallery.length > 0 && (
-      <section class="container-page py-14 md:py-16">
-        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      <section class="container-page py-16 md:py-20">
+        <Reveal client:visible>
+          <h2 class="font-heading text-2xl tracking-tight">Gallery</h2>
+        </Reveal>
+        <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
           {gallery.map((item, index) => (
             <Reveal client:visible delay={index * 0.06}>
               <div class="aspect-square overflow-hidden bg-mist">
@@ -81,7 +104,62 @@ const { eyebrow, heading, intro, heroImage, heroImageAlt, gallery = [] } = page?
     )
   }
 
-  <section class="container-page max-w-3xl pb-24">
+  <!-- Partners -->
+  {
+    partners.length > 0 && (
+      <section class="border-t border-hairline py-16 md:py-20">
+        <div class="container-page">
+          <Reveal client:visible>
+            <p class="text-xs uppercase tracking-[0.3em] text-accent">The People</p>
+            <h2 class="mt-3 max-w-xl text-balance font-heading text-3xl tracking-tight md:text-4xl">
+              Partners
+            </h2>
+          </Reveal>
+
+          <div class="mt-12 grid gap-10 sm:grid-cols-2 lg:max-w-3xl">
+            {partners.map((partner, index) => (
+              <Reveal client:visible delay={index * 0.08}>
+                <div class="aspect-[3/4] overflow-hidden bg-mist">
+                  {partner.photo ? (
+                    <Image
+                      src={partner.photo}
+                      alt={partner.photoAlt ?? partner.name}
+                      widths={[400, 600, 800]}
+                      sizes="(min-width: 640px) 50vw, 100vw"
+                      format="avif"
+                      quality={50}
+                      class="h-full w-full object-cover grayscale"
+                    />
+                  ) : (
+                    <div
+                      class="flex h-full w-full items-center justify-center"
+                      role="img"
+                      aria-label={`Portrait of ${partner.name} - coming soon`}
+                    >
+                      <span class="font-heading text-6xl text-stone/40">
+                        {partner.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <h3 class="mt-4 font-heading text-lg tracking-tight">{partner.name}</h3>
+                {partner.role && (
+                  <p class="mt-0.5 text-xs uppercase tracking-[0.15em] text-accent">
+                    {partner.role}
+                  </p>
+                )}
+                {partner.bio && (
+                  <p class="mt-3 text-sm leading-relaxed text-stone">{partner.bio}</p>
+                )}
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="container-page max-w-3xl border-t border-hairline py-14">
     <a
       href={withBase("/")}
       class="inline-block text-sm tracking-wide underline underline-offset-4 hover:text-accent"
