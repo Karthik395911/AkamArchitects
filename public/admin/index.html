@@ -20,5 +20,19 @@
         });
       }
     </script>
+    <script>
+      // The site's compiled CSS is content-hashed and changes on every build,
+      // so its filename can't be hardcoded here. Pull the current one from
+      // the live homepage instead, then hand it to Decap's preview iframe.
+      fetch("/")
+        .then((res) => res.text())
+        .then((html) => {
+          const match = html.match(/<link rel="stylesheet"[^>]*href="([^"]+\/Layout\.[^"]+\.css)"/);
+          if (match) {
+            CMS.registerPreviewStyle(match[1]);
+          }
+        })
+        .catch(() => {});
+    </script>
   </body>
 </html>
