@@ -373,4 +373,13 @@ const collaboratingCompanies = [
       </section>
     )
   }
+
+  <script is:inline>
+    // Netlify Identity's invite/recovery/confirmation emails always link to
+    // the site root with a token in the URL hash. The widget that handles
+    // those tokens only lives on /admin, so forward it there unmodified.
+    if (/^#(recovery_token|invite_token|confirmation_token)=/.test(window.location.hash)) {
+      window.location.replace("/admin/" + window.location.hash);
+    }
+  </script>
 </Layout>
