@@ -60,13 +60,13 @@ stats:
     suffix: +
     label: Design awards
 founders:
-  - name: Karthik Dileep
+  - name: Ar. Karthik Dileepan
     role: Co-Founder & Principal Architect
     bio: ""
     photo: ""
     photoAlt: Portrait of Karthik Dileep, Co-Founder & Principal Architect at AKAM
       Architects
-  - name: Anakha
-    role: Co-Founder & Lighting Design Lead
+  - name: Ar. Anakha V S
+    role: Co-Founder & Design Head
     bio: ""
 ---
