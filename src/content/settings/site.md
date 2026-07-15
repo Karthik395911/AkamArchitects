@@ -19,9 +19,9 @@ whatsapp: "919497642135"
 email: contact@akamarchitects.com
 addresses:
   - label: Malappuram Studio
-    line1: 4/163/C, Ganga Building
-    line2: Near Federal Bank, Vazhakkad Road
-    city: Areekode, Malappuram
+    line1: Ganga Building, Near Federal Bank
+    line2: Vazhakkad Road, Areekode
+    city: " Malappuram"
     state: Kerala
     postalCode: "673639"
     country: India
