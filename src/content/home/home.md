@@ -4,7 +4,7 @@ heroHeading: Architecture that breathes.
 heroSubheading: At AKAM Architects, we create thoughtful, sustainable
   architecture that balances light, nature, and functionality—creating enduring
   spaces for modern living.
-heroImage: ../../assets/home/hero.jpg
+heroImage: /src/assets/uploads/dsc08090.jpg
 heroImageAlt: Modern multi-level villa exterior (placeholder photo)
 heroCtaPrimaryLabel: View Projects
 heroCtaPrimaryHref: /projects
